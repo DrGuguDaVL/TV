@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,18 +7,26 @@
 <body>
 
 
-<div class="tv">
+<div id="boot" class="boot"></div>
+
+
+<div class="tv hidden" id="tv">
 <div class="screen">
-<h1>VOTE RESULTS</h1>
-<ul id="results"></ul>
+<h1>BFDI VOTING</h1>
+
+
+<textarea id="input" placeholder="Enter votes like:\nFirey=23\nLeafy=19\nBubble=7"></textarea>
+
+
+<button id="convert">CONVERT TO TOWERS</button>
+
+
+<div id="towers" class="towers"></div>
+
+
+<p id="result" class="result"></p>
 </div>
 </div>
-
-
-<button id="start">START REVEAL</button>
-
-
-<audio id="drumroll" src="drumroll.mp3"></audio>
 
 
 <script src="script.js"></script>

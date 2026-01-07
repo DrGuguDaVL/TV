@@ -1,52 +1,55 @@
-const API_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+const boot = document.getElementById('boot');
+const tv = document.getElementById('tv');
+const input = document.getElementById('input');
+const convert = document.getElementById('convert');
+const towersEl = document.getElementById('towers');
+const resultEl = document.getElementById('result');
 
 
-const resultsEl = document.getElementById("results");
-const startBtn = document.getElementById("start");
-const drumroll = document.getElementById("drumroll");
+// Boot delay
+setTimeout(() => {
+boot.style.display = 'none';
+tv.classList.remove('hidden');
+}, 500);
 
 
-let sorted = [];
-let index = 0;
-
-
-async function loadVotes() {
-const res = await fetch(API_URL);
-const data = await res.json();
-
-
-sorted = Object.entries(data)
-.sort((a, b) => a[1] - b[1]); // least votes first
+function parseVotes(text) {
+return text.split('\n').map(line => {
+const [name, votes] = line.split('=');
+return name && votes ? [name.trim(), Number(votes)] : null;
+}).filter(Boolean);
 }
 
 
-function revealNext() {
-if (index >= sorted.length) {
-drumroll.pause();
-return;
+convert.onclick = () => {
+towersEl.innerHTML = '';
+resultEl.textContent = '';
+
+
+const data = parseVotes(input.value);
+if (!data.length) return;
+
+
+const maxVotes = Math.max(...data.map(v => v[1]));
+
+
+data.forEach(([name, votes]) => {
+const tower = document.createElement('div');
+tower.className = 'tower';
+tower.style.height = (votes / maxVotes * 200 + 20) + 'px';
+
+
+const label = document.createElement('span');
+label.textContent = name;
+tower.appendChild(label);
+
+
+if (votes === maxVotes) {
+tower.classList.add('eliminated');
+resultEl.textContent = `${name}, you're eliminated with ${votes} votes!`;
 }
 
 
-const [name, votes] = sorted[index];
-const li = document.createElement("li");
-li.textContent = `${name} — ${votes} votes`;
-
-
-resultsEl.appendChild(li);
-setTimeout(() => li.classList.add("show"), 50);
-
-
-index++;
-setTimeout(revealNext, 2000);
-}
-
-
-startBtn.onclick = async () => {
-resultsEl.innerHTML = "";
-index = 0;
-
-
-await loadVotes();
-drumroll.play();
-setTimeout(revealNext, 3000);
+towersEl.appendChild(tower);
+});
 };
